@@ -1,4 +1,4 @@
-package com.depo.trask.fragments
+package com.depo.trask.ui.settings
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

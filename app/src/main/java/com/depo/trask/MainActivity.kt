@@ -9,6 +9,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.depo.trask.ui.login.LoginListener
+import com.depo.trask.util.toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -37,22 +39,6 @@ class MainActivity : AppCompatActivity() {
         return super.onSupportNavigateUp()
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
-
-        menuInflater.inflate(R.menu.overflow_menu, menu)
-        return true
-
-        val retValue = super.onCreateOptionsMenu(menu)
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        // The NavigationView already has these same navigation items, so we only add
-        // navigation items to the menu here if there isn't a NavigationView
-        if (navigationView == null) {
-            menuInflater.inflate(R.menu.overflow_menu, menu)
-            return true
-        }
-        return retValue
-    }*/
-
     // Nav Controller
     private fun setupNavController() {
 
@@ -70,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
             // Listening bottom navigation bar
             when (destination.id) {
-                !in navigationInMainScreen -> bottomNavigationView.visibility = View.GONE
+                R.id.loginFragment, R.id.aboutFragment -> bottomNavigationView.visibility = View.GONE
                 else -> bottomNavigationView.visibility = View.VISIBLE
             }
         }

@@ -1,4 +1,4 @@
-package com.depo.trask.fragments
+package com.depo.trask.ui.home
 
 import android.os.Bundle
 import android.view.*
@@ -45,6 +45,7 @@ class HomeFragment : Fragment(){
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         val id = item.itemId
+
         if(id == R.id.action_settings){
             navController.navigate(R.id.action_homeFragment_to_settingsFragment)
             return true

@@ -1,4 +1,4 @@
-package com.depo.trask.fragments
+package com.depo.trask.ui.history
 
 import android.os.Bundle
 import android.view.*

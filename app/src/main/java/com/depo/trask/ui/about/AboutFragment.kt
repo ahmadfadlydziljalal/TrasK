@@ -1,4 +1,4 @@
-package com.depo.trask.fragments
+package com.depo.trask.ui.about
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
