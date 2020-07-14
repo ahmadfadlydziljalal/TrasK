@@ -1,17 +1,19 @@
 package com.depo.trask.ui.login
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.depo.trask.R
+import com.depo.trask.data.db.AppDatabase
 import com.depo.trask.data.db.entities.User
+import com.depo.trask.data.network.MyApi
+import com.depo.trask.data.repositories.UserRepository
 import com.depo.trask.databinding.FragmentLoginBinding
 import com.depo.trask.util.hide
 import com.depo.trask.util.show
@@ -29,6 +31,13 @@ class LoginFragment : Fragment(), LoginListener {
         savedInstanceState: Bundle?
     ): View? {
 
+
+        val api = MyApi()
+        val db = AppDatabase(context = requireActivity().applicationContext)
+        val repository = UserRepository(api, db)
+        val factory = LoginViewModelFactory(repository)
+
+
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_login,
@@ -36,10 +45,18 @@ class LoginFragment : Fragment(), LoginListener {
             false
         )
 
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        viewModel = ViewModelProvider(this,factory).get(LoginViewModel::class.java)
 
         binding.viewmodel = viewModel
         viewModel.loginListener = this
+
+        viewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer { user ->
+            if(user != null){
+                Toast.makeText(activity, "Redirect it to home", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+
 
         return binding.root
 
@@ -55,7 +72,7 @@ class LoginFragment : Fragment(), LoginListener {
 
     override fun onSuccess(user : User) {
         progress_bar.hide()
-        Toast.makeText(activity, "${user.token} is logged_in", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "Welcome ${user.username} . Semoga sehat selalu... ", Toast.LENGTH_SHORT).show()
     }
 
     override fun onFailure(message: String) {

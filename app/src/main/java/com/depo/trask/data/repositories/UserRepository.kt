@@ -1,13 +1,23 @@
 package com.depo.trask.data.repositories
 
+import com.depo.trask.data.db.AppDatabase
+import com.depo.trask.data.db.entities.User
 import com.depo.trask.data.network.MyApi
+import com.depo.trask.data.network.SafeApiRequest
 import com.depo.trask.data.network.responses.LoginResponse
-import retrofit2.Response
 
-class UserRepository {
 
-    suspend fun userLogin(username : String, password : String) : Response<LoginResponse>{
-        return MyApi().userLogin(username,password)
+class UserRepository(
+    private val api: MyApi,
+    private val db: AppDatabase
+) : SafeApiRequest() {
+
+    suspend fun userLogin(username: String, password: String): LoginResponse {
+        return apiRequest { MyApi().userLogin(username, password) }
     }
+
+    suspend fun saveUser(user: User) = db.getUserDao().upsert(user)
+
+    fun getUser() = db.getUserDao().getUser()
 
 }

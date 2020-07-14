@@ -4,9 +4,12 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModel
 import com.depo.trask.data.repositories.UserRepository
+import com.depo.trask.util.ApiExceptions
 import com.depo.trask.util.Coroutines
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val repository: UserRepository
+) : ViewModel() {
 
     var username : String? = null
         get() = field
@@ -14,6 +17,8 @@ class LoginViewModel : ViewModel() {
         get() = field
 
     var loginListener: LoginListener? = null
+
+    fun getLoggedInUser() = repository.getUser()
 
     fun onClickButtonLogin(view: View) : Unit{
         loginListener?.onStarted()
@@ -24,15 +29,20 @@ class LoginViewModel : ViewModel() {
         }
 
         Coroutines.main {
-            val response = UserRepository().userLogin(username!!, password!!)
-            if (response.isSuccessful){
-                loginListener?.onSuccess(response.body()?.user!!)
-            }else{
-                loginListener?.onFailure("Error Code: ${response.code()} ${response.message()} ${response.headers()}")
+            try {
+
+                val loginResponse = repository.userLogin(username!!, password!!)
+                loginResponse.user?.let {
+                    loginListener?.onSuccess(it)
+                    repository.saveUser(it)
+                    return@main
+                }
+
+                loginListener?.onFailure(loginResponse.message!!)
+
+            }catch (e: ApiExceptions){
+                loginListener?.onFailure(e.message!!)
             }
         }
-
-
     }
-
 }
