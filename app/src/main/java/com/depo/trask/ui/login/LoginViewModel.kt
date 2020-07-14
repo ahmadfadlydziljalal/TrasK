@@ -1,11 +1,11 @@
 package com.depo.trask.ui.login
 
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModel
 import com.depo.trask.data.repositories.UserRepository
-import com.depo.trask.util.ApiExceptions
+import com.depo.trask.util.ApiException
 import com.depo.trask.util.Coroutines
+import com.depo.trask.util.NoInternetException
 
 class LoginViewModel(
     private val repository: UserRepository
@@ -30,7 +30,6 @@ class LoginViewModel(
 
         Coroutines.main {
             try {
-
                 val loginResponse = repository.userLogin(username!!, password!!)
                 loginResponse.user?.let {
                     loginListener?.onSuccess(it)
@@ -40,7 +39,9 @@ class LoginViewModel(
 
                 loginListener?.onFailure(loginResponse.message!!)
 
-            }catch (e: ApiExceptions){
+            }catch (e: ApiException){
+                loginListener?.onFailure(e.message!!)
+            }catch (e: NoInternetException){
                 loginListener?.onFailure(e.message!!)
             }
         }

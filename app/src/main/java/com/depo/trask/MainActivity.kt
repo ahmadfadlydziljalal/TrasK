@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
             // Listening bottom navigation bar
             when (destination.id) {
-                R.id.loginFragment, R.id.aboutFragment -> bottomNavigationView.visibility = View.GONE
+                R.id.loginFragment, R.id.settingsFragment -> bottomNavigationView.visibility = View.GONE
                 else -> bottomNavigationView.visibility = View.VISIBLE
             }
         }

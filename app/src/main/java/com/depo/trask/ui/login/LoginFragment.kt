@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.depo.trask.R
 import com.depo.trask.data.db.AppDatabase
 import com.depo.trask.data.db.entities.User
 import com.depo.trask.data.network.MyApi
+import com.depo.trask.data.network.NetworkConnectionInterceptor
 import com.depo.trask.data.repositories.UserRepository
 import com.depo.trask.databinding.FragmentLoginBinding
 import com.depo.trask.util.hide
@@ -31,8 +34,8 @@ class LoginFragment : Fragment(), LoginListener {
         savedInstanceState: Bundle?
     ): View? {
 
-
-        val api = MyApi()
+        val networkConnectionInterceptor = NetworkConnectionInterceptor(requireContext())
+        val api = MyApi(networkConnectionInterceptor)
         val db = AppDatabase(context = requireActivity().applicationContext)
         val repository = UserRepository(api, db)
         val factory = LoginViewModelFactory(repository)
@@ -51,15 +54,15 @@ class LoginFragment : Fragment(), LoginListener {
         viewModel.loginListener = this
 
         viewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer { user ->
+            val navController =  findNavController()
             if(user != null){
+                // How to redirect to Home Fragment and save the user state as authenticated
                 Toast.makeText(activity, "Redirect it to home", Toast.LENGTH_SHORT).show()
             }
+
         })
 
-
-
         return binding.root
-
     }
 
     companion object {

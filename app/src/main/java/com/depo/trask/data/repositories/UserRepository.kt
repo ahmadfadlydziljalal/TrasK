@@ -13,7 +13,7 @@ class UserRepository(
 ) : SafeApiRequest() {
 
     suspend fun userLogin(username: String, password: String): LoginResponse {
-        return apiRequest { MyApi().userLogin(username, password) }
+        return apiRequest { api.userLogin(username, password) }
     }
 
     suspend fun saveUser(user: User) = db.getUserDao().upsert(user)

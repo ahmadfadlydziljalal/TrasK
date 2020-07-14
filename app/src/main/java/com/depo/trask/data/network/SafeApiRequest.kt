@@ -1,6 +1,6 @@
 package com.depo.trask.data.network
 
-import com.depo.trask.util.ApiExceptions
+import com.depo.trask.util.ApiException
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Response
@@ -29,7 +29,7 @@ abstract class SafeApiRequest {
             }
             message.append("Error Code: ${response.code()}")
 
-            throw ApiExceptions(message.toString())
+            throw ApiException(message.toString())
 
         }
     }
