@@ -11,7 +11,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import com.depo.trask.R
+import com.depo.trask.data.db.entities.User
 import com.depo.trask.databinding.FragmentLoginBinding
+import com.depo.trask.util.hide
+import com.depo.trask.util.show
+import kotlinx.android.synthetic.main.fragment_login.*
 
 
 class LoginFragment : Fragment(), LoginListener {
@@ -46,15 +50,17 @@ class LoginFragment : Fragment(), LoginListener {
     }
 
     override fun onStarted() {
-        Log.i("Login", "Started")
+        progress_bar.show()
     }
 
-    override fun onSuccess(loginResponse: LiveData<String>) {
-        Log.i("Login", "Success " + loginResponse.toString())
+    override fun onSuccess(user : User) {
+        progress_bar.hide()
+        Toast.makeText(activity, "${user.token} is logged_in", Toast.LENGTH_SHORT).show()
     }
 
     override fun onFailure(message: String) {
-        Log.i("Login", "Failed " + message)
+        progress_bar.hide()
+        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
     }
 
 
