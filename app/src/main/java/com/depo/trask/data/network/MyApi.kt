@@ -17,6 +17,8 @@ interface MyApi {
     // suspend digunakan untuk pemanggilan via Coroutine
     // Artinya bisa di pause atau resume
 
+
+
     @FormUrlEncoded
     @POST("login")
     suspend fun userLogin(
@@ -35,10 +37,12 @@ interface MyApi {
                 .build()
 
 
+            val IPADDRESS = "http://192.168.0.106:8080/api/"
+//            val IPADDRESS = "http://192.168.43.17:8080/api/"
             return Retrofit.Builder()
                 .client(okkHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://192.168.0.106:8080/api/")
+                .baseUrl(IPADDRESS)
                 .build()
                 .create(MyApi::class.java)
         }

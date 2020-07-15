@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.depo.trask.ui.login.LoginListener
 import com.depo.trask.util.toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,14 +37,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        navController.navigateUp()
+
+
+        val currentDestination= NavHostFragment.findNavController(nav_host_fragment).currentDestination
+        when(currentDestination?.id) {
+            R.id.loginFragment -> {
+                finish()
+            }
+            else -> navController.navigateUp()
+        }
         return super.onSupportNavigateUp()
+    }
+
+    override fun onBackPressed() {
+        val currentDestination= NavHostFragment.findNavController(nav_host_fragment).currentDestination
+        when(currentDestination?.id) {
+            R.id.loginFragment -> {
+                finish()
+            }
+        }
+
+        super.onBackPressed()
     }
 
     // Nav Controller
     private fun setupNavController() {
 
         navController = findNavController(R.id.nav_host_fragment)
+
         setupActionBar()
         setupBottomNavigationBar()
 

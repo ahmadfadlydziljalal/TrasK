@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
-    <data>
-        <variable
-            name="viewmodel"
-            type="com.depo.trask.ui.login.LoginViewModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_login"
         android:layout_width="match_parent"
@@ -50,7 +43,6 @@
             app:layout_constraintTop_toBottomOf="@+id/textViewLoginPage">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:text="@={viewmodel.username}"
                 android:id="@+id/edit_text_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -76,20 +68,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="textPassword"
-                android:text="@={viewmodel.password}"
-
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/login_button"
+            android:id="@+id/button_login"
             style="@style/Widget.AppTheme.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:text="@string/login"
-            android:onClick="@{viewmodel::onClickButtonLogin}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/text_input_layout_password" />

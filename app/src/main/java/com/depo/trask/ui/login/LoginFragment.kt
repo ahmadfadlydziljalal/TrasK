@@ -1,6 +1,7 @@
 package com.depo.trask.ui.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.depo.trask.R
 import com.depo.trask.data.db.AppDatabase
@@ -18,15 +20,14 @@ import com.depo.trask.data.network.MyApi
 import com.depo.trask.data.network.NetworkConnectionInterceptor
 import com.depo.trask.data.repositories.UserRepository
 import com.depo.trask.databinding.FragmentLoginBinding
-import com.depo.trask.util.hide
-import com.depo.trask.util.show
+import com.depo.trask.util.*
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.launch
 
-
-class LoginFragment : Fragment(), LoginListener {
+class LoginFragment : Fragment() {
 
     private lateinit var viewModel: LoginViewModel
-    private lateinit var binding : FragmentLoginBinding
+    private lateinit var binding: FragmentLoginBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +41,6 @@ class LoginFragment : Fragment(), LoginListener {
         val repository = UserRepository(api, db)
         val factory = LoginViewModelFactory(repository)
 
-
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_login,
@@ -48,40 +48,45 @@ class LoginFragment : Fragment(), LoginListener {
             false
         )
 
-        viewModel = ViewModelProvider(this,factory).get(LoginViewModel::class.java)
-
-        binding.viewmodel = viewModel
-        viewModel.loginListener = this
+        viewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
+        binding.buttonLogin.setOnClickListener { loginUser() }
 
         viewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer { user ->
             val navController =  findNavController()
             if(user != null){
-                // How to redirect to Home Fragment and save the user state as authenticated
-                Toast.makeText(activity, "Redirect it to home", Toast.LENGTH_SHORT).show()
+                navController.navigate(R.id.action_loginFragment_to_homeFragment)
             }
-
         })
 
         return binding.root
     }
 
-    companion object {
-        fun newInstance() = LoginFragment()
+    private fun loginUser() {
+        val username = binding.editTextUsername.text.toString().trim()
+        val password = binding.editTextPassword.text.toString().trim()
+
+        binding.progressBar.show()
+        lifecycleScope.launch {
+            try {
+                val loginResponse = viewModel.userLogin(username!!, password!!)
+
+                if(loginResponse.user != null){
+                    viewModel.saveLoggedInUser(loginResponse.user)
+                }
+
+                binding.progressBar.hide()
+                binding.root.context.toast(loginResponse.message!!)
+
+            } catch (e: ApiException) {
+                binding.progressBar.hide()
+                binding.root.context.toast( e.toString())
+            } catch (e: NoInternetException) {
+                binding.progressBar.hide()
+                binding.root.context.toast( e.toString())
+            }
+        }
     }
 
-    override fun onStarted() {
-        progress_bar.show()
-    }
-
-    override fun onSuccess(user : User) {
-        progress_bar.hide()
-        Toast.makeText(activity, "Welcome ${user.username} . Semoga sehat selalu... ", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onFailure(message: String) {
-        progress_bar.hide()
-        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
-    }
 
 
 }
