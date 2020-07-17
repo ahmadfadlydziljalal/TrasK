@@ -46,8 +46,9 @@ class HomeFragment : Fragment() {
         val token = preferences.getString("token", null);
 
         if (token == null) {
-            navController.navigate(R.id.action_global_loginFragment)
+            navController.navigate(R.id.loginFragment)
         }
+
 
         observeAuthenticationState()
     }
@@ -71,11 +72,9 @@ class HomeFragment : Fragment() {
         loginViewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer { user ->
             val navController = findNavController()
             if (user == null) {
-                navController.navigate(R.id.action_global_loginFragment)
+                navController.navigate(R.id.loginFragment)
             }
         })
-
-
     }
 
     private fun showLogoutConfirmation() {

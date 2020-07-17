@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.depo.trask.R
 import com.depo.trask.data.db.AppDatabase
@@ -27,12 +28,7 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
-
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,6 +41,7 @@ class LoginFragment : Fragment() {
         val repository = UserRepository(api, db)
         val factory = LoginViewModelFactory(repository)
 
+
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_login,
@@ -54,11 +51,10 @@ class LoginFragment : Fragment() {
 
         loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
         binding.buttonLogin.setOnClickListener { loginUser() }
-
         loginViewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer { user ->
             val navController = findNavController()
             if (user != null) {
-                navController.navigate(R.id.homeFragment)
+                navController.navigate(R.id.action_loginFragment_to_homeFragment)
             }
         })
 
