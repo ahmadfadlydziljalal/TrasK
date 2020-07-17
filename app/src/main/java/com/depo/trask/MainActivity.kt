@@ -30,16 +30,18 @@ class MainActivity : AppCompatActivity() {
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         setTheme(R.style.Theme_MyTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         setupNavController()
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
 
-
-        val currentDestination= NavHostFragment.findNavController(nav_host_fragment).currentDestination
+        val currentDestination= navController.currentDestination
         when(currentDestination?.id) {
             R.id.loginFragment -> {
                 finish()
@@ -50,17 +52,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val currentDestination= NavHostFragment.findNavController(nav_host_fragment).currentDestination
+        val currentDestination= navController.currentDestination
         when(currentDestination?.id) {
             R.id.loginFragment -> {
                 finish()
             }
-        }
 
+        }
         super.onBackPressed()
     }
 
-    // Nav Controller
     private fun setupNavController() {
 
         navController = findNavController(R.id.nav_host_fragment)
@@ -84,7 +85,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Top Bar OR App Bar
     private fun setupActionBar() {
 
         // Ini menampilakan tanda panah pada app bar
@@ -101,7 +101,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    // Bottom Navigation Bar
     private fun setupBottomNavigationBar() {
         bottomNavigationView = findViewById(R.id.bottom_navigation_view)
         bottomNavigationView.setupWithNavController(navController)

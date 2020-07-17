@@ -1,15 +1,14 @@
 package com.depo.trask.ui.home
 
 import android.app.AlertDialog
-import android.content.DialogInterface
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -20,42 +19,86 @@ import com.depo.trask.data.network.NetworkConnectionInterceptor
 import com.depo.trask.data.repositories.UserRepository
 import com.depo.trask.ui.login.LoginViewModel
 import com.depo.trask.ui.login.LoginViewModelFactory
-import com.depo.trask.util.ApiException
-import com.depo.trask.util.NoInternetException
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
 class HomeFragment : Fragment() {
 
-    private lateinit var viewModel: LoginViewModel
+    private lateinit var loginViewModel: LoginViewModel
+    private lateinit var navController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        navController = findNavController()
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeAuthenticationState()
-    }
 
-    private fun observeAuthenticationState() {
-        val networkConnectionInterceptor = NetworkConnectionInterceptor(requireContext())
-        val api = MyApi(networkConnectionInterceptor)
-        val db = AppDatabase(context = requireActivity().applicationContext)
-        val repository = UserRepository(api, db)
-        val factory = LoginViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
+        val preferences =
+            this.requireActivity().getSharedPreferences("session", Context.MODE_PRIVATE)
+        val token = preferences.getString("token", null);
+
+        if (token == null) {
+            navController.navigate(R.id.action_global_loginFragment)
+        }
+
+        observeAuthenticationState()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.top_home_menu, menu)
+    }
+
+    private fun observeAuthenticationState() {
+
+        val networkConnectionInterceptor = NetworkConnectionInterceptor(requireContext())
+
+        val api = MyApi(networkConnectionInterceptor)
+        val db = AppDatabase(context = requireActivity().applicationContext)
+
+        val repository = UserRepository(api, db)
+        val factory = LoginViewModelFactory(repository)
+
+        loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
+        loginViewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer { user ->
+            val navController = findNavController()
+            if (user == null) {
+                navController.navigate(R.id.action_global_loginFragment)
+            }
+        })
+
+
+    }
+
+    private fun showLogoutConfirmation() {
+        val builder = AlertDialog.Builder(context, R.style.Theme_MyTheme_Dialog_alert)
+        builder.setMessage(
+            """
+                Are You Sure To Logout ?
+            """.trimIndent()
+        )
+            .setPositiveButton("Proceed") { _, _ ->
+                GlobalScope.launch {
+                    deleteToken()
+                    loginViewModel.deleteLoggedInUser()
+                }
+            }.show()
+    }
+
+    private fun deleteToken() {
+        val sharedPreferences =
+            this.requireActivity().getSharedPreferences("session", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("token", null)
+        editor.apply()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -79,33 +122,8 @@ class HomeFragment : Fragment() {
         }
 
         return NavigationUI.onNavDestinationSelected(
-            item!!,
+            item,
             requireView().findNavController()
-        )
-                || super.onOptionsItemSelected(item)
-    }
-
-    private fun showLogoutConfirmation() {
-
-        val builder = AlertDialog.Builder(context, R.style.Theme_MyTheme_Dialog_alert)
-
-        builder.setMessage(
-            """
-                Data lokal yang belum tersinkron dengan server akan hilang.
-                
-                Pastikan dengan menghubungi admin sistem di office
-            """.trimIndent()
-        )
-            .setPositiveButton("Proceed", DialogInterface.OnClickListener { _, _ ->
-
-
-                GlobalScope.launch {
-                    Log.w("Dzil", "inside launch with lifecycleScope")
-                    viewModel.deleteLoggedInUser()
-                }
-
-                findNavController().navigate(R.id.loginFragment)
-
-            }).show()
+        ) || super.onOptionsItemSelected(item)
     }
 }

@@ -1,38 +1,42 @@
 package com.depo.trask.ui.login
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.depo.trask.R
 import com.depo.trask.data.db.AppDatabase
-import com.depo.trask.data.db.entities.User
 import com.depo.trask.data.network.MyApi
 import com.depo.trask.data.network.NetworkConnectionInterceptor
 import com.depo.trask.data.repositories.UserRepository
 import com.depo.trask.databinding.FragmentLoginBinding
 import com.depo.trask.util.*
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.launch
+
 
 class LoginFragment : Fragment() {
 
-    private lateinit var viewModel: LoginViewModel
+    private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: FragmentLoginBinding
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
+
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View? {
 
         val networkConnectionInterceptor = NetworkConnectionInterceptor(requireContext())
@@ -48,13 +52,13 @@ class LoginFragment : Fragment() {
             false
         )
 
-        viewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
         binding.buttonLogin.setOnClickListener { loginUser() }
 
-        viewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer { user ->
-            val navController =  findNavController()
-            if(user != null){
-                navController.navigate(R.id.action_loginFragment_to_homeFragment)
+        loginViewModel.getLoggedInUser().observe(viewLifecycleOwner, Observer { user ->
+            val navController = findNavController()
+            if (user != null) {
+                navController.navigate(R.id.homeFragment)
             }
         })
 
@@ -68,10 +72,11 @@ class LoginFragment : Fragment() {
         binding.progressBar.show()
         lifecycleScope.launch {
             try {
-                val loginResponse = viewModel.userLogin(username!!, password!!)
+                val loginResponse = loginViewModel.userLogin(username!!, password!!)
 
-                if(loginResponse.user != null){
-                    viewModel.saveLoggedInUser(loginResponse.user)
+                if (loginResponse.user != null) {
+                    loginViewModel.saveLoggedInUser(loginResponse.user)
+                    loginResponse.user.token?.let { saveToken(it) }
                 }
 
                 binding.progressBar.hide()
@@ -79,14 +84,19 @@ class LoginFragment : Fragment() {
 
             } catch (e: ApiException) {
                 binding.progressBar.hide()
-                binding.root.context.toast( e.toString())
+                binding.root.context.toast(e.toString())
             } catch (e: NoInternetException) {
                 binding.progressBar.hide()
-                binding.root.context.toast( e.toString())
+                binding.root.context.toast(e.toString())
             }
         }
     }
 
-
-
+    private fun saveToken(token: String) {
+        val sharedPreferences =
+            this.requireActivity().getSharedPreferences("session", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("token", token)
+        editor.apply()
+    }
 }

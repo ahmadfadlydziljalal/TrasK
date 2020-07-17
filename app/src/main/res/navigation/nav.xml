@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.depo.trask.ui.home.HomeFragment"
         android:label="@string/app_name"
+        app:popUpTo="@+id/loginFragment"
+        app:popUpToInclusive="true"
         tools:layout="@layout/fragment_home">
 
         <argument android:name="authentication"
@@ -28,16 +30,7 @@
         android:id="@+id/loginFragment"
         android:name="com.depo.trask.ui.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@+id/loginFragment"
-            app:popUpToInclusive="true"
-            app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right"
-            />
-    </fragment>
+        tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/containerShippingFragment"
         android:name="com.depo.trask.ui.containershipping.ContainerShippingFragment"
@@ -58,5 +51,13 @@
         android:name="com.depo.trask.ui.about.AboutFragment"
         android:label="@string/about"
         tools:layout="@layout/fragment_about" />
+
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@+id/homeFragment"
+        app:popUpToInclusive="true"
+
+    />
 
 </navigation>
