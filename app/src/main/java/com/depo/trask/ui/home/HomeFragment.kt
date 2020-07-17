@@ -49,13 +49,38 @@ class HomeFragment : Fragment() {
             navController.navigate(R.id.loginFragment)
         }
 
-
         observeAuthenticationState()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.top_home_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        val id = item.itemId
+        val navController = findNavController()
+
+        if (id == R.id.action_settings) {
+            navController.navigate(R.id.action_homeFragment_to_settingsFragment)
+            return true
+        }
+
+        if (id == R.id.action_renew_home_information) {
+            Toast.makeText(context, "//TODO: Mengambil data dari Server", Toast.LENGTH_SHORT).show()
+            return true
+        }
+
+        if (id == R.id.action_logout) {
+            showLogoutConfirmation()
+            return true
+        }
+
+        return NavigationUI.onNavDestinationSelected(
+            item,
+            requireView().findNavController()
+        ) || super.onOptionsItemSelected(item)
     }
 
     private fun observeAuthenticationState() {
@@ -98,31 +123,5 @@ class HomeFragment : Fragment() {
         val editor = sharedPreferences.edit()
         editor.putString("token", null)
         editor.apply()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        val id = item.itemId
-        val navController = findNavController()
-
-        if (id == R.id.action_settings) {
-            navController.navigate(R.id.action_homeFragment_to_settingsFragment)
-            return true
-        }
-
-        if (id == R.id.action_renew_home_information) {
-            Toast.makeText(context, "//TODO: Mengambil data dari Server", Toast.LENGTH_SHORT).show()
-            return true
-        }
-
-        if (id == R.id.action_logout) {
-            showLogoutConfirmation()
-            return true
-        }
-
-        return NavigationUI.onNavDestinationSelected(
-            item,
-            requireView().findNavController()
-        ) || super.onOptionsItemSelected(item)
     }
 }

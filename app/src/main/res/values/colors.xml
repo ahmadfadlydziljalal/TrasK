@@ -1,26 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#84ffff</color>
-    <color name="colorPrimaryVariant">#baffff</color>
-    <color name="colorPrimaryDark">#4bcbcc</color>
-    <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorSecondary">#FAAB1A</color>
-    <color name="colorSecondaryVariant">#fff</color>
-    <color name="colorSecondaryDark">#4bcbcc</color>
-    <color name="colorOnSecondary">#005662</color>
-    <color name="colorError">#FF0000</color>
-    <color name="colorOnError">#FF0000</color>
-    <color name="colorSurface">#FAFAFA</color>
-    <color name="colorOnSurface">#FAFAFA</color>
-    <color name="colorAccent">#baffff</color>
-    <color name="colorOnBackground">@color/colorPrimaryDark</color>
-    <!-- Text Color -->
-    <color name="textColor">#000</color>
-    <color name="textColorPrimary">#000</color>
-    <color name="textColorSecondary">@color/colorPrimaryDark</color>
+
+    <color name="colorPrimary">#E0E0E0</color>
+    <color name="colorPrimaryDark">#FBB8AC</color>
+    <color name="colorAccent">#FEDBD0</color>
+    <color name="colorPrimaryVariant">#442C2E</color>
+    <color name="colorOnPrimary">#442C2E</color>
+
+
+    <color name="textColorPrimary">#442C2E</color>
     <color name="textInputOutlineColor">#FBB8AC</color>
+
     <color name="toolbarIconColor">@color/textColorPrimary</color>
     <color name="loginPageBackgroundColor">#FFFFFF</color>
     <color name="productGridBackgroundColor">#FFFFFF</color>
-    <color name="background">#FAFAFA</color>
+
+
+
+<!--    <color name="colorPrimary">#84ffff</color>-->
+<!--    <color name="colorPrimaryVariant">#baffff</color>-->
+<!--    <color name="colorPrimaryDark">#4bcbcc</color>-->
+<!--    <color name="colorOnPrimary">#FFFFFF</color>-->
+<!--    <color name="colorSecondary">#FAAB1A</color>-->
+<!--    <color name="colorSecondaryVariant">#fff</color>-->
+<!--    <color name="colorSecondaryDark">#4bcbcc</color>-->
+<!--    <color name="colorOnSecondary">#005662</color>-->
+<!--    <color name="colorError">#FF0000</color>-->
+<!--    <color name="colorOnError">#FF0000</color>-->
+<!--    <color name="colorSurface">#FAFAFA</color>-->
+<!--    <color name="colorOnSurface">#FAFAFA</color>-->
+<!--    <color name="colorAccent">#baffff</color>-->
+<!--    <color name="colorOnBackground">@color/colorPrimaryDark</color>-->
+<!--    &lt;!&ndash; Text Color &ndash;&gt;-->
+<!--    <color name="textColor">#000</color>-->
+<!--    <color name="textColorPrimary">#000</color>-->
+<!--    <color name="textColorSecondary">@color/colorPrimaryDark</color>-->
+<!--    <color name="textInputOutlineColor">#FBB8AC</color>-->
+<!--    <color name="toolbarIconColor">@color/textColorPrimary</color>-->
+<!--    <color name="loginPageBackgroundColor">#FFFFFF</color>-->
+<!--    <color name="productGridBackgroundColor">#FFFFFF</color>-->
+<!--    <color name="background">#FAFAFA</color>-->
 </resources>

@@ -4,16 +4,16 @@
     <item>
         <!--this is your background, you can use color, gradient etc.-->
         <color android:color="@android:color/white"/>
-        <!--<shape>
-              <gradient
-                   android:angle="315"
-                   android:endColor="#1a82ff"
-                   android:startColor="#2100d3"
-                   android:type="linear"/>
-        </shape> -->
+<!--        <shape>-->
+<!--              <gradient-->
+<!--                   android:angle="315"-->
+<!--                   android:endColor="#1a82ff"-->
+<!--                   android:startColor="#2100d3"-->
+<!--                   android:type="linear"/>-->
+<!--        </shape>-->
     </item>
     <item>
-        <bitmap android:src="@drawable/ellipse_2"
+        <bitmap android:src="@drawable/logo"
             android:gravity="center"/>
     </item>
 </layer-list>
